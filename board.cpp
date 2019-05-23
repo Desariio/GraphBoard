@@ -1209,13 +1209,8 @@ bool Board::rowPointingPair(int i, int j, int *value)
                                     }
                                 }
                             }
-
-
                         }
-
-
                         return true;
-
                     }
                 }
             }
