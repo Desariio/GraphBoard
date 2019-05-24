@@ -59,6 +59,13 @@ void MainWindow::initBoardButton()
     }
     this->listOfBoard.push_back(this->board);
     ++CPT;
+    Board tmp, b;
+    b = this->board;
+    do{
+        tmp = b;
+        b.step();
+    }while(tmp != b);
+    boardSolved = b;
 }
 
 void MainWindow::autoSolve()
@@ -175,7 +182,8 @@ void MainWindow::previousStep()
 
 void MainWindow::checkSolved()
 {  
-    bool check = false;
+    int mistakes = 0;
+    this->board = this->listOfBoard[0];
     for(int i = 0; i < 9; ++i){
         for(int j = 0; j < 9; ++j){
             QWidget *w = ui->gridBoard->itemAtPosition(i, j)->widget();
@@ -185,12 +193,17 @@ void MainWindow::checkSolved()
             }
         }
     }
+    for(int i = 0; i < 9; ++i){
+        for(int j = 0; j < 9; ++j){
+            if(this->board.getCells(i, j).getNumber() != this->boardSolved.getCells(i, j).getNumber()){
+                ++mistakes;
+            }
+        }
+    }
     if(this->board.isSolved())
         QMessageBox::information(this, "Solved", QString("Congratulations ! \nYou solved this board !"));
     else
-        QMessageBox::information(this, "Unsolved", QString("You failed !"));
-
-    setBtnEnable(false);
+        QMessageBox::information(this, "Unsolved", QString("You have %1 mistakes!").arg(mistakes));
 }
 
 void MainWindow::delay(int ms)

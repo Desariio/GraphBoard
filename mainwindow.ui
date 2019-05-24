@@ -46,7 +46,7 @@
     <widget class="QWidget" name="horizontalLayoutWidget">
      <property name="geometry">
       <rect>
-       <x>210</x>
+       <x>180</x>
        <y>420</y>
        <width>353</width>
        <height>80</height>
@@ -80,7 +80,7 @@
       <item>
        <widget class="QPushButton" name="btnCheckBoard">
         <property name="text">
-         <string>Check board</string>
+         <string>Valid board</string>
         </property>
        </widget>
       </item>

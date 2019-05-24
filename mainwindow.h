@@ -31,6 +31,7 @@ private slots:
 private:
     Ui::MainWindow *ui;
     Board board;
+    Board boardSolved;
     std::vector<Board> listOfBoard;
 
     void delay(int ms);
