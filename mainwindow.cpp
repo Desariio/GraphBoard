@@ -3,7 +3,7 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QTextStream>
-int CPT = 0;
+static int CPT = 0;
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -19,6 +19,10 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->btnNext, SIGNAL(clicked(bool)), this, SLOT(nextStep()));
     connect(ui->btnPrevious, SIGNAL(clicked(bool)), this, SLOT(previousStep()));
     connect(ui->btnCheckBoard, SIGNAL(clicked(bool)), this, SLOT(checkSolved()));
+
+    //connect(ui->gridBoard->widget(), SIGNAL(editingFinished()), this, SLOT(action()));
+
+
 
     connect(ui->actionQuit, SIGNAL(triggered(bool)), qApp, SLOT(quit()));
 }
@@ -77,7 +81,6 @@ void MainWindow::autoSolve()
     //th->start();
     do
     {
-        std::cout << this->board << '\n' << std::endl;
         tmp = this->board;
         this->board.step();
         if(tmp != this->board){
@@ -148,7 +151,6 @@ void MainWindow::previousStep()
 
                 if(tmp.getCells(i, j).getNumber() !=
                         this->board.getCells(i,j).getNumber()){
-                    std::cout << "CPT :" << CPT << std::endl;
                     btn->setText("");
                     ui->gridBoard->addWidget(btn, i, j);
                     this->listOfBoard.pop_back();
@@ -162,7 +164,6 @@ void MainWindow::previousStep()
 
                 if(tmp.getCells(i, j).getNumber() !=
                         this->board.getCells(i,j).getNumber()){
-                    std::cout << "CPT :" << CPT << std::endl;
                     btn->setText("");
                     ui->gridBoard->addWidget(btn, i, j);
                     this->listOfBoard.pop_back();
@@ -183,6 +184,7 @@ void MainWindow::previousStep()
 void MainWindow::checkSolved()
 {  
     int mistakes = 0;
+    int steps = 0;
     this->board = this->listOfBoard[0];
     for(int i = 0; i < 9; ++i){
         for(int j = 0; j < 9; ++j){
@@ -205,6 +207,13 @@ void MainWindow::checkSolved()
     else
         QMessageBox::information(this, "Unsolved", QString("You have %1 mistakes!").arg(mistakes));
 }
+/*
+void MainWindow::action()
+{
+    int action = 0;
+    ++action;
+    std::cout << "ACTION : " << action << std::endl;
+}*/
 
 void MainWindow::delay(int ms)
 {
