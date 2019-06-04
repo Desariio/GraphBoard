@@ -7,6 +7,11 @@
 #include <QLineEdit>
 #include <QThread>
 #include <QTime>
+#include <QTcpSocket>
+#include <QDebug>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QJsonParseError>
 
 namespace Ui {
 class MainWindow;
@@ -22,11 +27,16 @@ public:
 
 private slots:
     void initBoardButton();
+   // void connectionSocket();
     void autoSolve();
     void nextStep();
     void previousStep();
     void checkSolved();
     //void action();
+
+    void socketReady();
+    void socketDisconnected();
+    void on_btnConnection_clicked();
 
 private:
     Ui::MainWindow *ui;
@@ -34,6 +44,11 @@ private:
     Board boardSolved;
     std::vector<Board> listOfBoard;
 
+    QTcpSocket *socket;
+    QByteArray data;
+
+    QJsonDocument doc;
+    QJsonParseError docError;
 
     void delay(int ms);
     void setBtnEnable(bool isEnable);

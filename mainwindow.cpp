@@ -3,6 +3,7 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QTextStream>
+#include <QTcpSocket>
 static int CPT = 0;
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -14,12 +15,19 @@ MainWindow::MainWindow(QWidget *parent) :
     setBtnEnable(false);
     ui->gridBoard->setSpacing(1);
 
+    //socket
+    socket = new QTcpSocket(this);
+    connect(socket, SIGNAL(readyRead()), this, SLOT(socketReady()));
+    connect(socket, SIGNAL(disconnected()), this, SLOT(socketDisconnected()));
+
+    //ui button action
     connect(ui->openFile, SIGNAL(triggered(bool)), this, SLOT(initBoardButton()));
     connect(ui->btnSolve, SIGNAL(clicked(bool)),this, SLOT(autoSolve()));
     connect(ui->btnNext, SIGNAL(clicked(bool)), this, SLOT(nextStep()));
     connect(ui->btnPrevious, SIGNAL(clicked(bool)), this, SLOT(previousStep()));
     connect(ui->btnCheckBoard, SIGNAL(clicked(bool)), this, SLOT(checkSolved()));
 
+   // connect(ui->btnConnection, SIGNAL(clicked(bool)), this, SLOT(connectionSocket()));
     //connect(ui->gridBoard->widget(), SIGNAL(editingFinished()), this, SLOT(action()));
 
 
@@ -71,6 +79,11 @@ void MainWindow::initBoardButton()
     }while(tmp != b);
     boardSolved = b;
 }
+
+/*void MainWindow::connectionSocket()
+{
+
+}*/
 
 void MainWindow::autoSolve()
 {
@@ -184,7 +197,7 @@ void MainWindow::previousStep()
 void MainWindow::checkSolved()
 {  
     int mistakes = 0;
-    int steps = 0;
+    //int steps = 0;
     this->board = this->listOfBoard[0];
     for(int i = 0; i < 9; ++i){
         for(int j = 0; j < 9; ++j){
@@ -215,6 +228,20 @@ void MainWindow::action()
     std::cout << "ACTION : " << action << std::endl;
 }*/
 
+void MainWindow::socketReady()
+{
+    if(socket->waitForConnected(500)){
+        socket->waitForReadyRead(500);
+        data = socket->readAll();
+        qDebug() << data;
+    }
+}
+
+void MainWindow::socketDisconnected()
+{
+    socket->deleteLater();
+}
+
 void MainWindow::delay(int ms)
 {
     QTime dieTime = QTime::currentTime().addMSecs(ms);
@@ -231,3 +258,8 @@ void MainWindow::setBtnEnable(bool isEnable)
     ui->btnCheckBoard->setEnabled(isEnable);
 }
 
+
+void MainWindow::on_btnConnection_clicked()
+{
+    socket->connectToHost("127.0.0.1", 5555);
+}

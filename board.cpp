@@ -670,7 +670,6 @@ void Board::rowNakedTriple(int i, int j)
                         }
                     }
                 }
-
             }
         }
     }
